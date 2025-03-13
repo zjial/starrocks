@@ -422,7 +422,13 @@ public abstract class LakeTableAlterMetaJobBase extends AlterJobV2 {
 
     // Only for reducing data writing after the first log, so we don't do deep copy
     LakeTableAlterMetaJobBase getShadowCopy() {
-        return this;
+        if (this instanceof LakeTableAsyncFastSchemaChangeJob) {
+            LakeTableAsyncFastSchemaChangeJob copied = new LakeTableAsyncFastSchemaChangeJob();
+            copyOnlyForNonFirstLog(copied);
+            return copied;
+        } else {
+            return this;
+        }
     }
 
     @Override
@@ -523,7 +529,7 @@ public abstract class LakeTableAlterMetaJobBase extends AlterJobV2 {
         }
     }
 
-    void copyOnlyForNonFirstLog(LakeTableAlterMetaJobBase copied) {
+    protected void copyOnlyForNonFirstLog(LakeTableAlterMetaJobBase copied) {
         copied.watershedTxnId = this.watershedTxnId;
         copied.watershedGtid = this.watershedGtid;
         copied.physicalPartitionIndexMap = this.physicalPartitionIndexMap;
