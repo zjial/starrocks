@@ -421,15 +421,7 @@ public abstract class LakeTableAlterMetaJobBase extends AlterJobV2 {
     }
 
     // Only for reducing data writing after the first log, so we don't do deep copy
-    LakeTableAlterMetaJobBase getShadowCopy() {
-        if (this instanceof LakeTableAsyncFastSchemaChangeJob) {
-            LakeTableAsyncFastSchemaChangeJob copied = new LakeTableAsyncFastSchemaChangeJob();
-            copyOnlyForNonFirstLog(copied);
-            return copied;
-        } else {
-            return this;
-        }
-    }
+    protected abstract LakeTableAlterMetaJobBase getShadowCopy();
 
     @Override
     protected boolean cancelImpl(String errMsg) {

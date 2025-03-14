@@ -111,6 +111,13 @@ public class LakeTableAsyncFastSchemaChangeJob extends LakeTableAlterMetaJobBase
     }
 
     @Override
+    protected LakeTableAsyncFastSchemaChangeJob getShadowCopy() {
+        LakeTableAsyncFastSchemaChangeJob copied = new LakeTableAsyncFastSchemaChangeJob();
+        copyOnlyForNonFirstLog(copied);
+        return copied;
+    }
+
+    @Override
     protected void updateCatalog(Database db, LakeTable table) {
         updateCatalogUnprotected(db, table);
     }
@@ -152,9 +159,9 @@ public class LakeTableAsyncFastSchemaChangeJob extends LakeTableAlterMetaJobBase
 
     @Override
     protected void restoreState(LakeTableAlterMetaJobBase job) {
-        List<IndexSchemaInfo> schemaInfos = ((LakeTableAsyncFastSchemaChangeJob) job).schemaInfos;
-        if (schemaInfos != null && !schemaInfos.isEmpty()) {
-            this.schemaInfos = new ArrayList<>(schemaInfos);
+        List<IndexSchemaInfo> jobSchemaInfos = ((LakeTableAsyncFastSchemaChangeJob) job).schemaInfos;
+        if (jobSchemaInfos != null && !jobSchemaInfos.isEmpty()) {
+            this.schemaInfos = new ArrayList<>(jobSchemaInfos);
         }
     }
 
